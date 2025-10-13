@@ -1,0 +1,14 @@
+{
+  "port": 80,
+  "baseURL": "/",
+  "address": "",
+  "log": "stdout",
+  "database": "/database/filebrowser.db",
+  "root": "/srv",
+  "branding": {
+    "name": "WordPress Files - Ver logs para senha",
+    "files": {
+      "theme": "dark"
+    }
+  }
+}

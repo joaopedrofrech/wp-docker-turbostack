@@ -1,0 +1,42 @@
+# Arquivos de ambiente e configuração local
+.env
+.env.local
+.env.production
+
+# Dados dos containers
+data/
+volumes/
+backups/
+logs/
+
+# Arquivos temporários
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node.js (caso use ferramentas de build)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# WordPress específico (caso monte volumes localmente)
+wp-content/uploads/
+wp-content/cache/
+wp-content/backup-db/
+wp-content/advanced-cache.php
+wp-content/wp-cache-config.php
+
+# SSL certificates (caso use localmente)
+ssl/
+certs/
+
+# Arquivo de configuração do File Browser
+.filebrowser.json
