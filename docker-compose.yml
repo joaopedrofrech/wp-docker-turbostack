@@ -14,20 +14,35 @@ services:
     networks:
       - wp_network
     command: >
-      --innodb-buffer-pool-size=64M
-      --innodb-log-file-size=32M
-      --innodb-log-buffer-size=4M
-      --max-connections=100
+      --innodb-buffer-pool-size=32M
+      --innodb-log-file-size=16M
+      --innodb-log-buffer-size=2M
+      --max-connections=50
       --query-cache-type=1
-      --query-cache-size=8M
-      --thread-cache-size=4
+      --query-cache-size=4M
+      --thread-cache-size=2
+      --table-open-cache=64
+      --table-definition-cache=64
+      --key-buffer-size=8M
+      --sort-buffer-size=64K
+      --read-buffer-size=64K
+      --read-rnd-buffer-size=64K
+      --myisam-sort-buffer-size=8M
+      --thread-stack=64K
+      --max-allowed-packet=64M
 
   # Redis - Object Cache
   redis:
     image: redis:8.2.2-alpine
     container_name: ${PROJECT_NAME:-wp-site}_redis
     restart: unless-stopped
-    command: redis-server --maxmemory 32mb --maxmemory-policy allkeys-lru
+    command: >
+      redis-server
+      --maxmemory 32mb
+      --maxmemory-policy allkeys-lru
+      --save ""
+      --tcp-keepalive 60
+      --databases 1
     volumes:
       - redis_data:/data
     networks:
@@ -47,19 +62,22 @@ services:
       WORDPRESS_DB_USER: ${MYSQL_USER}
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
       WORDPRESS_CONFIG_EXTRA: |
-        define('WP_CACHE', true);
-        define('DISABLE_WP_CRON', true);
-        define('DISALLOW_FILE_EDIT', true);
-        define('FORCE_SSL_LOGIN', true);
-        define('FORCE_SSL_ADMIN', true);
-        define('WP_REDIS_HOST', 'redis');
-        define('WP_REDIS_PORT', 6379);
-        define('WP_REDIS_TIMEOUT', 1);
-        define('WP_REDIS_READ_TIMEOUT', 1);
-        define('WP_REDIS_DATABASE', 0);
-        define('FS_METHOD', 'direct');
-        define('WP_HTTP_BLOCK_EXTERNAL', false);
-        define('WP_ACCESSIBLE_HOSTS', 'varnish,nginx,localhost,127.0.0.1');
+        if (!defined('WP_DEBUG')) define('WP_DEBUG', false);
+        if (!defined('WP_DEBUG_LOG')) define('WP_DEBUG_LOG', false);
+        if (!defined('WP_DEBUG_DISPLAY')) define('WP_DEBUG_DISPLAY', false);
+        if (!defined('WP_CACHE')) define('WP_CACHE', true);
+        if (!defined('DISABLE_WP_CRON')) define('DISABLE_WP_CRON', true);
+        if (!defined('DISALLOW_FILE_EDIT')) define('DISALLOW_FILE_EDIT', true);
+        if (!defined('FORCE_SSL_LOGIN')) define('FORCE_SSL_LOGIN', true);
+        if (!defined('FORCE_SSL_ADMIN')) define('FORCE_SSL_ADMIN', true);
+        if (!defined('WP_REDIS_HOST')) define('WP_REDIS_HOST', 'redis');
+        if (!defined('WP_REDIS_PORT')) define('WP_REDIS_PORT', 6379);
+        if (!defined('WP_REDIS_TIMEOUT')) define('WP_REDIS_TIMEOUT', 1);
+        if (!defined('WP_REDIS_READ_TIMEOUT')) define('WP_REDIS_READ_TIMEOUT', 1);
+        if (!defined('WP_REDIS_DATABASE')) define('WP_REDIS_DATABASE', 0);
+        if (!defined('FS_METHOD')) define('FS_METHOD', 'direct');
+        if (!defined('WP_HTTP_BLOCK_EXTERNAL')) define('WP_HTTP_BLOCK_EXTERNAL', false);
+        if (!defined('WP_ACCESSIBLE_HOSTS')) define('WP_ACCESSIBLE_HOSTS', 'varnish,nginx,localhost,127.0.0.1');
     volumes:
       - wordpress_data:/var/www/html
       - ./wordpress/php.ini:/usr/local/etc/php/conf.d/custom.ini
@@ -101,14 +119,14 @@ services:
     volumes:
       - ./varnish/default.vcl:/etc/varnish/default.vcl
     command: >
-      varnishd -F 
-      -f /etc/varnish/default.vcl 
-      -s malloc,32m 
-      -a :80
-      -T :6082
+      varnishd -F
+      -f /etc/varnish/default.vcl
+      -s malloc,16m
+      -a :6081
+      -T 0.0.0.0:6082
       -p thread_pools=1
       -p thread_pool_min=5
-      -p thread_pool_max=8
+      -p thread_pool_max=6
     networks:
       - wp_network
       - traefik
