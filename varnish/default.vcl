@@ -24,8 +24,6 @@ backend nginx {
 acl purge {
     "127.0.0.1";
     "::1";
-    "nginx";
-    "wordpress";
     "10.0.0.0"/8;
     "172.16.0.0"/12;
     "192.168.0.0"/16;
@@ -94,7 +92,12 @@ sub vcl_recv {
         return (pass);
     }
 
-    # Don't cache admin area
+    # All-In-One Security: don't cache if security cookies present
+    if (req.http.Cookie ~ "aios_|wfvt_|wordfence_verifiedHuman") {
+        return (pass);
+    }
+
+    # Don't cache admin area and security-related URLs
     if (req.url ~ "wp-admin|wp-login|wp-cron|xmlrpc\.php") {
         return (pass);
     }
@@ -104,7 +107,22 @@ sub vcl_recv {
         return (pass);
     }
 
-    # Don't cache WooCommerce pages (CloudPanel optimized)
+    # All-In-One Security compatibility - don't cache security endpoints
+    if (req.url ~ "wp-admin/admin\.php\?page=aio_wp_security") {
+        return (pass);
+    }
+
+    # Don't cache 2FA related requests
+    if (req.url ~ "wp-login\.php.*action=(tfa|lostpassword|register)") {
+        return (pass);
+    }
+
+    # Don't cache login security checks and captcha
+    if (req.url ~ "wp-admin/admin-post\.php.*action=aios") {
+        return (pass);
+    }
+
+    # Don't cache WooCommerce pages
     if (req.url ~ "^/my-account/") {
         return (pass);
     }
@@ -199,8 +217,8 @@ sub vcl_backend_response {
         set beresp.ttl = 1d;
     }
 
-    # Remove Set-Cookie for Wordfence compatibility
-    if (beresp.http.Set-Cookie ~ "wfvt_|wordfence_verifiedHuman") {
+    # Remove Set-Cookie for security plugins compatibility (static files only)
+    if (bereq.http.X-Static-File == "true" && beresp.http.Set-Cookie ~ "wfvt_|wordfence_verifiedHuman|aios_") {
         unset beresp.http.Set-Cookie;
     }
 

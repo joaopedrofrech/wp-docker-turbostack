@@ -1,25 +1,25 @@
 services:
   # MariaDB - Banco de dados
   mariadb:
-    image: mariadb:11.8
+    image: mariadb:11.8-noble
     container_name: ${PROJECT_NAME:-wp-site}_mariadb
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password_change_me}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-wordpress}
-      MYSQL_USER: ${MYSQL_USER:-wordpress}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-wp_password_change_me}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
       - wp_network
     command: >
-      --innodb-buffer-pool-size=128M
+      --innodb-buffer-pool-size=64M
       --innodb-log-file-size=32M
       --innodb-log-buffer-size=4M
       --max-connections=100
       --query-cache-type=1
-      --query-cache-size=16M
+      --query-cache-size=8M
       --thread-cache-size=4
 
   # Redis - Object Cache
@@ -27,7 +27,7 @@ services:
     image: redis:8.2.2-alpine
     container_name: ${PROJECT_NAME:-wp-site}_redis
     restart: unless-stopped
-    command: redis-server --maxmemory 64mb --maxmemory-policy allkeys-lru
+    command: redis-server --maxmemory 32mb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
     networks:
@@ -43,29 +43,27 @@ services:
       - redis
     environment:
       WORDPRESS_DB_HOST: mariadb:3306
-      WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
-      WORDPRESS_DB_USER: ${MYSQL_USER:-wordpress}
-      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD:-wp_password_change_me}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_CACHE', true);
         define('DISABLE_WP_CRON', true);
         define('DISALLOW_FILE_EDIT', true);
         define('FORCE_SSL_LOGIN', true);
         define('FORCE_SSL_ADMIN', true);
-        define('WP_DEBUG', false);
         define('WP_REDIS_HOST', 'redis');
         define('WP_REDIS_PORT', 6379);
         define('WP_REDIS_TIMEOUT', 1);
         define('WP_REDIS_READ_TIMEOUT', 1);
         define('WP_REDIS_DATABASE', 0);
         define('FS_METHOD', 'direct');
-        ini_set('memory_limit', '512M');
-        ini_set('upload_max_filesize', '100M');
-        ini_set('post_max_size', '100M');
-        ini_set('max_execution_time', 300);
+        define('WP_HTTP_BLOCK_EXTERNAL', false);
+        define('WP_ACCESSIBLE_HOSTS', 'varnish,nginx,localhost,127.0.0.1');
     volumes:
       - wordpress_data:/var/www/html
       - ./wordpress/php.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./wordpress/mu-plugins:/var/www/html/wp-content/mu-plugins:ro
     networks:
       - wp_network
     labels:
@@ -79,10 +77,15 @@ services:
     restart: unless-stopped
     depends_on:
       - wordpress
+    environment:
+      NGINX_AUTH_USER: ${NGINX_AUTH_USER}
+      NGINX_AUTH_PASS: ${NGINX_AUTH_PASS}
     volumes:
       - wordpress_data:/var/www/html:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/entrypoint.sh:/docker-entrypoint.sh
+    entrypoint: ["/docker-entrypoint.sh"]
     networks:
       - wp_network
     labels:
@@ -90,7 +93,7 @@ services:
 
   # Varnish - Cache de Página
   varnish:
-    image: varnish:latest
+    image: varnish:fresh-alpine
     container_name: ${PROJECT_NAME:-wp-site}_varnish
     restart: unless-stopped
     depends_on:
@@ -100,8 +103,12 @@ services:
     command: >
       varnishd -F 
       -f /etc/varnish/default.vcl 
-      -s malloc,128m 
+      -s malloc,32m 
       -a :80
+      -T :6082
+      -p thread_pools=1
+      -p thread_pool_min=5
+      -p thread_pool_max=8
     networks:
       - wp_network
       - traefik

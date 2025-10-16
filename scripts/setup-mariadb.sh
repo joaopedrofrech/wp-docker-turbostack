@@ -7,10 +7,10 @@ if [ -f .env ]; then
 fi
 
 PROJECT_NAME=${PROJECT_NAME:-wp-site}
-MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_password}
-MYSQL_DATABASE=${MYSQL_DATABASE:-wordpress}
-MYSQL_USER=${MYSQL_USER:-wordpress}
-MYSQL_PASSWORD=${MYSQL_PASSWORD:-wp_password}
+MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-dev_root_123}
+MYSQL_DATABASE=${MYSQL_DATABASE:-wp-site-local}
+MYSQL_USER=${MYSQL_USER:-wp-user-local}
+MYSQL_PASSWORD=${MYSQL_PASSWORD:-dev_password_123}
 
 echo "🗄️ Configurando MariaDB para WordPress..."
 
