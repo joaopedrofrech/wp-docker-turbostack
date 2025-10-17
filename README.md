@@ -10,7 +10,36 @@ The stack includes `wordpress/wp-config-optimizations.php` with WordPress 6.8 co
 - **Security Hardening**: Disabled file editing, forced SSL admin
 - **Performance**: Optimized memory limits, reduced post revisions
 - **Varnish Compatibility**: Proper proxy and SSL detection
-- **Plugin Support**: chmod() enabled for plugin/theme installation
+- **Plugin Support**: chmod() enabled for WordPress functionality
+
+## 🚀 Nginx FastCGI Cache + WP Rocket
+
+This stack uses **Nginx FastCGI Cache** configured according to the official **Rocket-Nginx** project, providing:
+
+- **32MB RAM Cache**: Intelligent page caching directly in Nginx
+- **Automatic Cache Bypass**: WordPress admin, logged-in users, e-commerce (WooCommerce, EDD)
+- **WP Rocket Integration**: Dashboard "Clear Cache" button automatically purges Nginx cache
+- **Cache Headers**: Debug headers to monitor cache status (X-FastCGI-Cache, X-Rocket-Nginx-Serving-Static)
+- **Static File Optimization**: 1-year browser cache for CSS, JS, images, fonts
+- **Security Rules**: All WordPress.org recommended security measures included
+
+**How it works:**
+1. WP Rocket generates optimized HTML/CSS/JS
+2. Nginx caches the final result in RAM (60 minutes)
+3. Subsequent requests are served directly from Nginx (microseconds)
+4. Redis handles object caching (database queries)
+5. Result: Ultra-fast response times with minimal resource usage
+
+**Cache Bypass Conditions:**
+- POST requests
+- Query strings (except UTM, fbclid, gclid)
+- Logged-in users (WordPress, WooCommerce, EDD)
+- WordPress admin area (/wp-admin, /wp-login.php)
+- Cart/checkout pages (automatic detection)
+- Preview pages
+- Comment authors
+
+## 🚀 Quick Setup
 
 **Usage**: Include in your `wp-config.php`:
 ```php
@@ -42,14 +71,13 @@ docker exec wp-container php wordpress_compliance_check.php
 
 | Service | Version | Function | RAM Usage |
 |---------|---------|----------|-----------|
-| **Varnish** | latest | HTTP Cache Layer | ~83MB |
-| **Nginx** | 1.28-alpine | Web Server + Security | ~6MB |
+| **Nginx** | 1.28-alpine | Web Server + FastCGI Cache | ~10MB |
 | **WordPress** | fpm-alpine | PHP 8.3.26 + WordPress | ~37MB |
 | **Redis** | 8.2.2-alpine | Object Cache | ~6MB |
 | **MariaDB** | 11.8-noble | Database (LTS) | ~225MB |
 | **Adminer** | latest | Database Management | ~8MB |
 | **File Browser** | latest | File Management | ~20MB |
-| **Total** | | **Optimized Stack** | **~385MB** |
+| **Total** | | **Optimized Stack** | **~306MB** |
 
 ## 🎯 Key Features
 
@@ -61,8 +89,9 @@ docker exec wp-container php wordpress_compliance_check.php
 - **OPcache Optimized** (10k files, 128MB cache)
 
 ### ✅ Performance Optimization
-- **Multi-layer Caching**: Varnish (HTTP) + Redis (Objects)
-- **Memory Efficient**: 385MB total under load
+- **Multi-layer Caching**: Nginx FastCGI Cache (32MB RAM) + Redis (Objects)
+- **WP Rocket Compatible**: Based on official Rocket-Nginx configuration
+- **Memory Efficient**: 306MB total under load
 - **Database Optimized**: MariaDB 32MB buffer pool
 - **File Processing**: 600MB uploads in 60 seconds tested
 
@@ -94,7 +123,7 @@ Upload to your Docker platform (Dokploy, Coolify, etc.) and configure environmen
 ## 🌐 Access URLs
 
 **Local Development:**
-- WordPress: http://localhost (Varnish) | http://localhost:8080 (direct Nginx)
+- WordPress: http://localhost (Nginx with FastCGI Cache)
 - Adminer: http://localhost:8081
 - File Browser: http://localhost:8082 (check logs for password)
 

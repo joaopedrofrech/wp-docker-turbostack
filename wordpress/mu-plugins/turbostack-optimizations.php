@@ -1,11 +1,18 @@
 <?php
 /**
  * Plugin Name: TurboStack Optimizations
- * Description: Essential WordPress optimizations for Docker environments - focused on performance and upload control
- * Version: 2.1.0
+ * Description: WordPress optimizations for Docker + Nginx + Cloudflare + WP Rocket stack
+ * Version: 3.0.0
  * Author: João Pedro Frech
  * Author URI: https://joaopedrofrech.com/
  * Must Use: true
+ * 
+ * Stack Support:
+ * - Docker containers (WordPress FPM + Nginx + MariaDB + Redis)
+ * - Nginx + Rocket-Nginx (page cache)
+ * - Cloudflare (CDN + proxy)
+ * - WP Rocket (cache plugin)
+ * - Redis (object cache)
  */
 
 // Prevent direct access
@@ -14,10 +21,17 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * TurboStack Simple Optimizations
+ * TurboStack Optimizations
  * 
- * Focused on essentials: upload control, basic performance, Docker proxy support.
- * Security is handled by All-In-One WP Security plugin.
+ * Essentials: upload control, performance, Cloudflare + Nginx proxy support.
+ * 
+ * Cache Stack:
+ * - Level 1: Cloudflare CDN (edge cache, global)
+ * - Level 2: Nginx + Rocket-Nginx (HTML files, server-side)
+ * - Level 3: WP Rocket (page cache generator)
+ * - Level 4: Redis (object cache, database queries)
+ * 
+ * Security: All-In-One WP Security plugin + Nginx rate limiting
  */
 class TurboStack_Optimizations {
     
@@ -57,18 +71,33 @@ class TurboStack_Optimizations {
     }
     
     /**
-     * Handle reverse proxy headers for Docker environments
+     * Handle reverse proxy headers for Cloudflare + Nginx environments
      */
     private static function setup_proxy_support() {
-        // HTTPS forwarding from reverse proxy
+        // HTTPS forwarding from Cloudflare/Traefik
         if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
             $_SERVER['HTTPS'] = 'on';
         }
         
-        // Real IP forwarding
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        // Cloudflare SSL detection
+        if (isset($_SERVER['HTTP_CF_VISITOR'])) {
+            $cf_visitor = json_decode($_SERVER['HTTP_CF_VISITOR'], true);
+            if ($cf_visitor && isset($cf_visitor['scheme']) && $cf_visitor['scheme'] === 'https') {
+                $_SERVER['HTTPS'] = 'on';
+            }
+        }
+        
+        // Real IP from Cloudflare (priority: CF-Connecting-IP > X-Forwarded-For)
+        if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
             $_SERVER['REMOTE_ADDR'] = trim($ips[0]);
+        }
+        
+        // Cloudflare Country Code (useful for geo-targeting)
+        if (isset($_SERVER['HTTP_CF_IPCOUNTRY'])) {
+            define('CLOUDFLARE_COUNTRY', $_SERVER['HTTP_CF_IPCOUNTRY']);
         }
     }
     
