@@ -1,23 +1,22 @@
 # 🚀 WP Docker TurboStack
 
-TurboStack is a modern, production-ready WordPress stack designed for developers and teams who demand maximum performance, security, and automation. It combines the best open-source technologies—NGINX, Rocket-NGINX, Cloudflare, MariaDB, Redis, and custom scripts—into a single, seamless Docker environment. With deep integration between all components, TurboStack delivers instant static caching, edge delivery, robust security, and zero-hassle management. Every detail is tuned for real-world scale, reliability, and developer experience.
+TurboStack is a modern, production-ready WordPress stack designed for developers and teams who demand maximum performance, security, and automation. It combines the best open-source technologies—NGINX, Rocket-NGINX, Cloudflare, MariaDB, Redis, and custom scripts—into a single, seamless Docker environment.
+
+With deep integration between all components, TurboStack delivers instant static caching, edge delivery, robust security, and zero-hassle management. Every detail is tuned for real-world scale, reliability, and developer experience.
 
 ---
 
 ## 📦 Stack Components
 
-| Component           | Version      |
-|---------------------|-------------|
-| 🐬 MariaDB          | 11.8        |
-| 🗄️ Redis            | 8.2         |
-| 🏗️ WordPress (FPM)  | latest      |
-| 🚀 NGINX            | 1.28        |
-| ⚡ Rocket-NGINX     | 3.1.1       |
-| ☁️ Cloudflare       | (external)  |
-| 🛡️ Security         | custom      |
-| �️ Scripts          | custom      |
-| 🗃️ File Browser     | latest      |
-| 🧑‍� Adminer        | latest      |
+| Component        | Version   | Role/Notes                                 |
+|------------------|-----------|--------------------------------------------|
+| WordPress (FPM)  | latest    | Main app, PHP-FPM, custom configs/plugins  |
+| NGINX            | 1.28      | Web server, static/cache, security         |
+| Rocket-NGINX     | 3.1.1     | Advanced static cache for WP Rocket        |
+| MariaDB          | 11.8      | Database, persistent storage               |
+| Redis            | 8.2       | Object cache for WordPress                 |
+| Adminer          | latest    | DB management UI (protected)               |
+| File Browser     | latest    | Web file manager (protected)               |
 
 ---
 
@@ -45,8 +44,8 @@ TurboStack is a modern, production-ready WordPress stack designed for developers
 
 ## ⚡ Scripts & WP Cron
 
-- `scripts/setup-mariadb.sh`: Automatically tests and initializes MariaDB, creates WordPress DB/user if needed. No manual DB setup required.
 - `scripts/wp-cron-external.sh`: Runs WordPress cron jobs externally via HTTP, ensuring scheduled tasks always run (even with full static cache). Recommended for production—just add to your system crontab.
+- `scripts/setup-mariadb.sh`: Automatically tests and initializes MariaDB, creates WordPress DB/user if needed. No manual DB setup required. For local test only.
 - Both scripts are designed for automation, reliability, and compatibility with any Docker platform.
 
 ---
@@ -136,10 +135,10 @@ docker run --rm httpd:2.4-alpine htpasswd -nbB admin yourpassword
 
 ## 📝 Usage & Best Practices
 
-- **.env setup:** Copy `.env.example` to `.env` and fill in all secrets, DB credentials, project/domain names, and Cloudflare/API keys. Never commit your real `.env` to version control.
+- **.env setup:** Copy `.env.example` to `.env` and fill in all secrets, DB credentials, project/domain names. Never commit your real `.env` to version control.
 - **Domain config:** Set `DOMAIN` and `PROJECT_NAME` in `.env` for correct routing. NGINX and Traefik use these for all service URLs and SSL.
 - **Compose local:** For local development, use `docker-compose -f docker-compose.yml -f docker-compose.local.yml up` to enable local-only features, mounts, or debugging. Never mix local overrides in production.
-- **Traefik/Cloudflare:** The stack is ready for Traefik as reverse proxy, with compose labels for HTTPS, domain routing, and Cloudflare DNS challenge for SSL. Set your Cloudflare API keys in `.env` for automated SSL and edge delivery.
+- **Traefik/Cloudflare:** The stack is ready for Traefik as reverse proxy, with compose labels for HTTPS, domain routing, and Cloudflare DNS challenge for SSL.
 - **Authentication:** Adminer and File Browser are protected with HTTP Basic Auth. Set `ADMINER_AUTH` and `FILES_AUTH` in `.env` for secure access.
 - **Plugins:** Must-use plugins (`turbostack-optimizations.php`, `wordpress-docker-bridge.php`) are auto-mounted for performance, security, and Docker/Cloudflare/NGINX integration.
 - **Volumes:** All persistent data (DB, cache, uploads, configs) is stored in named Docker volumes. Review and back up as needed.
