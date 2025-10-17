@@ -15,8 +15,8 @@ With deep integration between all components, TurboStack delivers instant static
 | Rocket-NGINX     | 3.1.1     | Advanced static cache for WP Rocket        |
 | MariaDB          | 11.8      | Database, persistent storage               |
 | Redis            | 8.2       | Object cache for WordPress                 |
-| Adminer          | latest    | DB management UI (protected)               |
-| File Browser     | latest    | Web file manager (protected)               |
+| Adminer          | latest    | DB management UI                           |
+| File Browser     | latest    | Web file manager                           |
 
 ---
 
