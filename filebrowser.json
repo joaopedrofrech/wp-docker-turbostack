@@ -6,7 +6,7 @@
   "database": "/database/filebrowser.db",
   "root": "/srv",
   "branding": {
-    "name": "WordPress Files - Ver logs para senha",
+    "name": "Files",
     "files": {
       "theme": "dark"
     }

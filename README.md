@@ -147,3 +147,16 @@ docker run --rm httpd:2.4-alpine htpasswd -nbB admin yourpassword
 ---
 
 **TurboStack: The fastest, most secure, and most scalable way to run WordPress on Docker.**
+
+---
+
+## 🧮 Resource Limits & Multi-Site Scalability
+
+This stack is pre-configured with optimized resource limits to enable the deployment of multiple WordPress sites on a single server. The default memory and performance settings are designed to balance efficiency and stability when running several sites in parallel, making it easy to scale horizontally as your needs grow.
+
+**Key points:**
+- The configuration is tuned for running many sites together.
+- Resource limits are enforced at the container level, so no single site or service can exhaust your server.
+- If you plan to host only one site per server, you can safely increase the limits for even more performance.
+- Always adjust resource values to match your actual server capacity and the number of sites you plan to deploy.
+- For true scalability, monitor real usage (`docker stats`) and adjust limits as you add or remove sites.
