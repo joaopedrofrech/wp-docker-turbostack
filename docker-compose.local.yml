@@ -1,4 +1,5 @@
-# Docker Compose para desenvolvimento local - wp-docker-turbostack
+
+# Docker Compose for local development - wp-docker-turbostack
 
 services:
   # MariaDB - Banco de dados
@@ -18,22 +19,24 @@ services:
     networks:
       - wp_network
     command: >
-      --innodb-buffer-pool-size=32M
+      --innodb-buffer-pool-size=96M
+      --table-open-cache=400
+      --table-definition-cache=400
       --innodb-log-file-size=16M
-      --innodb-log-buffer-size=2M
+      --innodb-log-buffer-size=8M
       --max-connections=50
-      --thread-cache-size=4
-      --table-open-cache=64
-      --table-definition-cache=64
-      --sort-buffer-size=128K
-      --read-buffer-size=64K
-      --read-rnd-buffer-size=64K
-      --myisam-sort-buffer-size=8M
-      --thread-stack=64K
+      --thread-cache-size=8
+      --sort-buffer-size=256K
+      --read-buffer-size=128K
+      --read-rnd-buffer-size=128K
       --max-allowed-packet=64M
       --wait-timeout=600
       --interactive-timeout=600
       --skip-name-resolve
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   # Redis - Object Cache
   redis:
@@ -44,8 +47,14 @@ services:
       - "6379:6379"  # Exposta para acesso local
     command: >
       redis-server
-      --maxmemory 32mb
+      --maxmemory 64mb
       --maxmemory-policy allkeys-lru
+      --save ""
+      --appendonly no
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     volumes:
       - redis_data:/data
     networks:
@@ -89,8 +98,12 @@ services:
     labels:
       - "wp.cron.job=true"
       - "wp.project=${PROJECT_NAME:-wp-site}"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
-  # Nginx - Servidor Web com Cache
+  # Nginx
   nginx:
     image: nginx:1.28-alpine
     container_name: ${PROJECT_NAME:-wp-site}_nginx_local
@@ -108,6 +121,10 @@ services:
       - nginx_cache:/var/cache/nginx
     networks:
       - wp_network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
   # Adminer - Gerenciamento de Banco
   adminer:
@@ -123,6 +140,10 @@ services:
       ADMINER_DESIGN: pepa-linha-dark
     networks:
       - wp_network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
   # File Browser - Nativo (gera senha automática)
   filebrowser:
@@ -137,6 +158,10 @@ services:
       - filebrowser_data:/database
     networks:
       - wp_network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
 volumes:
   mariadb_data:
