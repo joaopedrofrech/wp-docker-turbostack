@@ -1,0 +1,131 @@
+; Rocket-Nginx configuration file
+; Maintainer: SatelliteWP
+; URL: https://github.com/satellitewp/rocket-nginx
+;
+; Original author: Maxime Jobin
+; URL: https://www.maximejobin.com
+; Version: 3.1.1
+
+; Default configuration
+[default]
+
+; Enable debug information
+; This adds debug headers to help understand what is going on when a problem occurs with the configuration
+; Expected values: true, false
+; Default value: false
+debug = false
+
+; WP-Content folder
+; Default value: wp-content
+wp_content_folder = wp-content
+
+; HTML Cache-Control
+; Cache control header to use for html files
+html_cache_control = "no-cache, no-store, must-revalidate"
+
+; Cookies
+; Cookies can be specified to avoid serving a cached file. Some plugins may need to bypass the use of a
+; file that was previously cached. List all cookies that must invalidate the use of cache.
+; The cookie name must contain the text value set.
+; Note that each value will be used in a REGEX. Make sure characters are escaped when needed.
+; Example: cookie_invalidate[] = "wordpress_logged_in_"
+cookie_invalidate[] = "wordpress_logged_in_"
+cookie_invalidate[] = "wp\-postpass_"
+cookie_invalidate[] = "woocommerce_items_in_cart"
+cookie_invalidate[] = "woocommerce_cart_hash"
+cookie_invalidate[] = "wptouch_switch_toogle"
+cookie_invalidate[] = "comment_author_"
+cookie_invalidate[] = "comment_author_email_"
+
+; Query strings to ignore
+; Query strings invalidate the caching process made by Rocket-Nginx. But some strings are added, for instance,
+; for JavaScript and do not influence the output provided by the server. List all query strings that won't
+; invalidate the use of a cached page.
+; Reference: https://docs.wp-rocket.me/article/971-caching-query-strings
+; Google Analytics and Ads:
+query_string_ignore[] = "utm_source"
+query_string_ignore[] = "utm_campaign"
+query_string_ignore[] = "utm_medium"
+query_string_ignore[] = "utm_expid"
+query_string_ignore[] = "utm_term"
+query_string_ignore[] = "utm_content"
+query_string_ignore[] = "utm_id"
+query_string_ignore[] = "utm_source_platform"
+query_string_ignore[] = "utm_creative_format"
+query_string_ignore[] = "utm_marketing_tactic"
+query_string_ignore[] = "_ga"
+query_string_ignore[] = "gclid"
+query_string_ignore[] = "campaignid"
+query_string_ignore[] = "adgroupid"
+query_string_ignore[] = "adid"
+query_string_ignore[] = "gbraid"
+query_string_ignore[] = "wbraid"
+query_string_ignore[] = "gadid"
+query_string_ignore[] = "gad_source"
+query_string_ignore[] = "gad_campaignid"
+; Google DoubleClick
+query_string_ignore[] = "gclsrc"
+; Google Shopping
+query_string_ignore[] = "srsltid"
+; Adobe Advertising Cloud
+query_string_ignore[] = "ef_id"
+; Facebook
+query_string_ignore[] = "fb_action_ids"
+query_string_ignore[] = "fb_action_types"
+query_string_ignore[] = "fb_source"
+query_string_ignore[] = "fbclid"
+query_string_ignore[] = "fbadid"
+; Mailchimp
+query_string_ignore[] = "mc_cid"
+query_string_ignore[] = "mc_eid"
+; Matomo
+query_string_ignore[] = "mtm_source"
+query_string_ignore[] = "mtm_medium"
+query_string_ignore[] = "mtm_campaign"
+query_string_ignore[] = "mtm_keyword"
+query_string_ignore[] = "mtm_cid"
+query_string_ignore[] = "mtm_content"
+; Microsoft Advertising
+query_string_ignore[] = "msclkid"
+; Klavyo
+query_string_ignore[] = "_ke"
+; Other
+query_string_ignore[] = "age-verified"
+query_string_ignore[] = "ao_noptimize"
+query_string_ignore[] = "usqp"
+query_string_ignore[] = "cn-reloaded"
+query_string_ignore[] = "sscid"
+query_string_ignore[] = "msclkid"
+
+; Query strings to cache
+; Query strings invalidate the caching process made by Rocket-Nginx. Some strings may need to be cached.
+; List all query strings that needs to be cached as found in the WP Rocket configuration.
+; Reference: https://docs.wp-rocket.me/article/971-caching-query-strings
+;query_string_cache[] = "country"
+
+; Medias extensions
+; Medias extensions for images, icons, fonts and other cachable medias. All extensions are separated
+; by pipes (|).
+; Default value: ico|gif|jpe?g|png|svg|eot|otf|woff|woff2|ttf|ogg|webp
+media_extensions = "ico|gif|jpe?g|png|svg|eot|otf|woff|woff2|ttf|ogg|webp"
+
+; Cache expiration delay
+; Cache expiration delay for CSS, JS and media files
+; Default value: 30d
+css_expiration = "30d"
+js_expiration = "30d"
+media_expiration = "30d"
+
+; Mobile user agents
+; Mobile user agents regex pattern. By design, a tablet is not a mobile.
+; Default value: (?:phone|windows\s+phone|ipod|blackberry|(?:android|bb\d+|meego|silk|googlebot) .+? mobile|palm|windows\s+ce|opera mini|avantgo|mobilesafari|docomo|kaios)
+mobile_ua_devices = "(?:phone|windows\s+phone|ipod|blackberry|(?:android|bb\d+|meego|silk|googlebot) .+? mobile|palm|windows\s+ce|opera mini|avantgo|mobilesafari|docomo|kaios)"
+
+
+; Multiple sections can be created for multiple websites with different configurations.
+; It is recommended to use the default values as a base for custom validations. A new configuration
+; file will be created for each new section created.
+
+; In the following example, the 'default' configuration is used and added a custom cookie invalidation.
+;[example.com : default]
+;cookie_invalidate[] = "my_custom_cookie"
