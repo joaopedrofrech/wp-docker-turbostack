@@ -119,14 +119,14 @@ services:
       - nginx_cache:/var/cache/nginx
     networks:
       - wp_network
-      - traefik
+      - dokploy-network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.${PROJECT_NAME:-wp-site}.rule=Host(`${DOMAIN}`)"
       - "traefik.http.routers.${PROJECT_NAME:-wp-site}.entrypoints=websecure"
       - "traefik.http.routers.${PROJECT_NAME:-wp-site}.tls.certresolver=cloudflare"
       - "traefik.http.services.${PROJECT_NAME:-wp-site}.loadbalancer.server.port=80"
-      - "traefik.docker.network=traefik"
+      - "traefik.docker.network=dokploy-network"
     deploy:
       resources:
         limits:
@@ -148,14 +148,14 @@ services:
       ADMINER_DESIGN: pepa-linha-dark
     networks:
       - wp_network
-      - traefik
+      - dokploy-network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.${PROJECT_NAME:-wp-site}-adminer.rule=Host(`adminer.${DOMAIN}`)"
       - "traefik.http.routers.${PROJECT_NAME:-wp-site}-adminer.entrypoints=websecure"
       - "traefik.http.routers.${PROJECT_NAME:-wp-site}-adminer.tls.certresolver=cloudflare"
       - "traefik.http.services.${PROJECT_NAME:-wp-site}-adminer.loadbalancer.server.port=8080"
-      - "traefik.docker.network=traefik"
+      - "traefik.docker.network=dokploy-network"
       # Middleware de autenticação básica (OBRIGATÓRIO para produção)
       - "traefik.http.routers.${PROJECT_NAME:-wp-site}-adminer.middlewares=${PROJECT_NAME:-wp-site}-auth"
       - "traefik.http.middlewares.${PROJECT_NAME:-wp-site}-auth.basicauth.users=${ADMINER_AUTH}"
@@ -177,14 +177,14 @@ services:
       - filebrowser_data:/database
     networks:
       - wp_network
-      - traefik
+      - dokploy-network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.${PROJECT_NAME:-wp-site}-files.rule=Host(`files.${DOMAIN}`)"
       - "traefik.http.routers.${PROJECT_NAME:-wp-site}-files.entrypoints=websecure"
       - "traefik.http.routers.${PROJECT_NAME:-wp-site}-files.tls.certresolver=cloudflare"
       - "traefik.http.services.${PROJECT_NAME:-wp-site}-files.loadbalancer.server.port=80"
-      - "traefik.docker.network=traefik"
+      - "traefik.docker.network=dokploy-network"
       # Middleware de autenticação básica (OBRIGATÓRIO para produção)
       - "traefik.http.routers.${PROJECT_NAME:-wp-site}-files.middlewares=${PROJECT_NAME:-wp-site}-files-auth"
       - "traefik.http.middlewares.${PROJECT_NAME:-wp-site}-files-auth.basicauth.users=${FILES_AUTH}"
@@ -210,5 +210,5 @@ volumes:
 networks:
   wp_network:
     driver: bridge
-  traefik:
+  dokploy-network:
     external: true
