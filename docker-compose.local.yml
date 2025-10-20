@@ -1,23 +1,21 @@
-
 # Docker Compose for local development - wp-docker-turbostack
 
 services:
-  # MariaDB - Banco de dados
+  # MariaDB - Database
   mariadb:
     image: mariadb:11.8-noble
-    container_name: ${PROJECT_NAME:-wp-site}_mariadb_local
     restart: unless-stopped
     ports:
-      - "3306:3306"  # Exposta para acesso local
+      - "3306:3306"  # Local Access
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-dev_root_123}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-wp-site-local}
       MYSQL_USER: ${MYSQL_USER:-wp-user-local}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-dev_password_123}
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - mariadb-data:/var/lib/mysql
     networks:
-      - wp_network
+      - wp-network
     command: >
       --innodb-buffer-pool-size=96M
       --table-open-cache=400
@@ -37,38 +35,41 @@ services:
       resources:
         limits:
           memory: 512M
+        reservations:
+          memory: 256M
+
 
   # Redis - Object Cache
   redis:
     image: redis:8.2.2-alpine
-    container_name: ${PROJECT_NAME:-wp-site}_redis_local
     restart: unless-stopped
     ports:
-      - "6379:6379"  # Exposta para acesso local
+      - "6379:6379"  # Local Access
     command: >
       redis-server
       --maxmemory 64mb
       --maxmemory-policy allkeys-lru
       --save ""
       --appendonly no
+    volumes:
+      - redis-data:/data
+    networks:
+      - wp-network
     deploy:
       resources:
         limits:
           memory: 256M
-    volumes:
-      - redis_data:/data
-    networks:
-      - wp_network
+        reservations:
+          memory: 64M
+
 
   # WordPress com PHP-FPM
   wordpress:
     image: wordpress:fpm-alpine
-    container_name: ${PROJECT_NAME:-wp-site}_wordpress_local
     restart: unless-stopped
     depends_on:
       - mariadb
       - redis
-    # extra_hosts configurado automaticamente via mu-plugin
     environment:
       WORDPRESS_DB_HOST: mariadb:3306
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wp-site-local}
@@ -89,92 +90,99 @@ services:
         if (!defined('WP_HTTP_BLOCK_EXTERNAL')) define('WP_HTTP_BLOCK_EXTERNAL', false);
         if (!defined('WP_ACCESSIBLE_HOSTS')) define('WP_ACCESSIBLE_HOSTS', 'nginx,localhost,127.0.0.1');
     volumes:
-      - wordpress_data:/var/www/html
+      - wordpress-data:/var/www/html
       - ./wordpress/php.ini:/usr/local/etc/php/conf.d/custom.ini
       - ./wordpress/php-fpm.conf:/usr/local/etc/php-fpm.d/zzz-custom.conf
       - ./wordpress/mu-plugins:/var/www/html/wp-content/mu-plugins:ro
     networks:
-      - wp_network
-    labels:
-      - "wp.cron.job=true"
-      - "wp.project=${PROJECT_NAME:-wp-site}"
+      - wp-network
     deploy:
       resources:
         limits:
           memory: 512M
+        reservations:
+          memory: 256M
+
 
   # Nginx
   nginx:
     image: nginx:1.28-alpine
-    container_name: ${PROJECT_NAME:-wp-site}_nginx_local
     restart: unless-stopped
     depends_on:
       - wordpress
     ports:
-      - "80:80"     # Acesso principal - Nginx agora é o frontend
-      - "8080:80"   # Porta alternativa para compatibilidade
+      - "80:80"  # Local Access
+      - "8080:80"  # Local Access alternative
     volumes:
-      - wordpress_data:/var/www/html:ro
+      - wordpress-data:/var/www/html:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/rocket-nginx:/etc/nginx/rocket-nginx:ro
-      - nginx_cache:/var/cache/nginx
     networks:
-      - wp_network
+      - wp-network
     deploy:
       resources:
         limits:
           memory: 256M
+        reservations:
+          memory: 64M
 
-  # Adminer - Gerenciamento de Banco
+
+  # Adminer - Database Management
   adminer:
     image: adminer:latest
-    container_name: ${PROJECT_NAME:-wp-site}_adminer_local
     restart: unless-stopped
     depends_on:
       - mariadb
     ports:
-      - "8081:8080"  # Acesso local ao Adminer
+      - "8081:8080"  # Local Access
     environment:
       ADMINER_DEFAULT_SERVER: mariadb
       ADMINER_DESIGN: pepa-linha-dark
     networks:
-      - wp_network
+      - wp-network
     deploy:
       resources:
         limits:
           memory: 256M
+        reservations:
+          memory: 64M
 
-  # File Browser - Nativo (gera senha automática)
+
+  # File Browser
   filebrowser:
     image: filebrowser/filebrowser:latest
-    container_name: ${PROJECT_NAME:-wp-site}_filebrowser_local
     restart: unless-stopped
     ports:
-      - "8082:80"
+      - "8082:80" # Local Access
     volumes:
-      - wordpress_data:/srv
+      - wordpress-data:/srv
       - ./filebrowser.json:/.filebrowser.json
-      - filebrowser_data:/database
+      - filebrowser-data:/database
     networks:
-      - wp_network
+      - wp-network
     deploy:
       resources:
         limits:
           memory: 256M
+        reservations:
+          memory: 64M
 
+
+ # Project Volumes
 volumes:
-  mariadb_data:
+  mariadb-data:
     driver: local
-  redis_data:
+  redis-data:
     driver: local
-  wordpress_data:
+  wordpress-data:
     driver: local
-  filebrowser_data:
-    driver: local
-  nginx_cache:
+  filebrowser-data:
     driver: local
 
+
+# Project Networks
 networks:
-  wp_network:
+  wp-network:
     driver: bridge
+

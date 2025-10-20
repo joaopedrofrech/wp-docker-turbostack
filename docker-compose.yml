@@ -93,9 +93,6 @@ services:
       - ./wordpress/mu-plugins:/var/www/html/wp-content/mu-plugins:ro
     networks:
       - wp-network
-    labels:
-      - "wp.cron.job=true"
-      - "wp.project=${PROJECT_NAME:-wp-site}"
     deploy:
       resources:
         limits:
@@ -161,6 +158,7 @@ services:
         reservations:
           memory: 64M
 
+
  # Project Volumes
 volumes:
   mariadb-data:
@@ -171,6 +169,7 @@ volumes:
     driver: local
   filebrowser-data:
     driver: local
+
 
 # Project Networks
 networks:
