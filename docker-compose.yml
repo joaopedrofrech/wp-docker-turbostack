@@ -142,6 +142,13 @@ services:
     networks:
       - wp_network
       - dokploy-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${PROJECT_NAME:-wp-site}-adminer.rule=Host(`adminer.${DOMAIN}`)"
+      - "traefik.http.routers.${PROJECT_NAME:-wp-site}-adminer.entrypoints=websecure"
+      - "traefik.http.routers.${PROJECT_NAME:-wp-site}-adminer.tls.certresolver=letsencrypt"
+      - "traefik.http.services.${PROJECT_NAME:-wp-site}-adminer.loadbalancer.server.port=8080"
+      - "traefik.docker.network=dokploy-network"
     deploy:
       resources:
         limits:
