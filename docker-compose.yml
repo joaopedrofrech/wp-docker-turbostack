@@ -9,7 +9,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - mariadb-data:/var/lib/mysql
     networks:
       - wp-network
     command: >
@@ -46,7 +46,7 @@ services:
       --save ""
       --appendonly no
     volumes:
-      - redis_data:/data
+      - redis-data:/data
     networks:
       - wp-network
     deploy:
@@ -88,11 +88,11 @@ services:
         if (!defined('WP_HTTP_BLOCK_EXTERNAL')) define('WP_HTTP_BLOCK_EXTERNAL', false);
         if (!defined('WP_ACCESSIBLE_HOSTS')) define('WP_ACCESSIBLE_HOSTS', 'nginx,localhost,127.0.0.1');
     volumes:
-      - wordpress_data:/var/www/html
+      - wordpress-data:/var/www/html
       - ./wordpress/php.ini:/usr/local/etc/php/conf.d/custom.ini
       - ./wordpress/php-fpm.conf:/usr/local/etc/php-fpm.d/zzz-custom.conf
       - ./wordpress/mu-plugins:/var/www/html/wp-content/mu-plugins:ro
-      - phpsocket:/var/run/php
+      - phpsocket-data:/var/run/php
     networks:
       - wp-network
     labels:
@@ -119,11 +119,11 @@ services:
       wordpress:
         condition: service_healthy
     volumes:
-      - wordpress_data:/var/www/html:ro
+      - wordpress-data:/var/www/html:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/rocket-nginx:/etc/nginx/rocket-nginx:ro
-      - phpsocket:/var/run/php
+      - phpsocket-data:/var/run/php
     networks:
       - wp-network
     deploy:
@@ -158,9 +158,9 @@ services:
     image: filebrowser/filebrowser:latest
     restart: unless-stopped
     volumes:
-      - wordpress_data:/srv
+      - wordpress-data:/srv
       - ./filebrowser.json:/.filebrowser.json
-      - filebrowser_data:/database
+      - filebrowser-data:/database
     networks:
       - wp-network
     deploy:
@@ -172,15 +172,15 @@ services:
 
  # Project Volumes
 volumes:
-  mariadb_data:
+  mariadb-data:
     driver: local
-  redis_data:
+  redis-data:
     driver: local
-  wordpress_data:
+  wordpress-data:
     driver: local
-  filebrowser_data:
+  filebrowser-data:
     driver: local
-  phpsocket:
+  phpsocket-data:
     driver: local
 
 # Project Networks
