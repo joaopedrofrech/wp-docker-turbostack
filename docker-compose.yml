@@ -64,6 +64,7 @@ services:
     depends_on:
       - mariadb
       - redis
+    command: sh -c "mkdir -p /var/run/php && chmod 777 /var/run/php && php-fpm"
     environment:
       WORDPRESS_DB_HOST: mariadb:3306
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
