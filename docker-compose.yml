@@ -126,7 +126,6 @@ services:
       - phpsocket:/var/run/php
     networks:
       - wp-network
-      - dokploy-network
     deploy:
       resources:
         limits:
@@ -146,7 +145,6 @@ services:
       ADMINER_DESIGN: pepa-linha-dark
     networks:
       - wp-network
-      - dokploy-network
     deploy:
       resources:
         limits:
@@ -165,7 +163,6 @@ services:
       - filebrowser_data:/database
     networks:
       - wp-network
-      - dokploy-network
     deploy:
       resources:
         limits:
@@ -190,5 +187,3 @@ volumes:
 networks:
   wp-network:
     driver: bridge
-  dokploy-network:
-    external: true
