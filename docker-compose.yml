@@ -91,7 +91,6 @@ services:
       - ./wordpress/php.ini:/usr/local/etc/php/conf.d/custom.ini
       - ./wordpress/php-fpm.conf:/usr/local/etc/php-fpm.d/zzz-custom.conf
       - ./wordpress/mu-plugins:/var/www/html/wp-content/mu-plugins:ro
-      - phpsocket-data:/var/run/php
     networks:
       - wp-network
     labels:
@@ -122,7 +121,6 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/rocket-nginx:/etc/nginx/rocket-nginx:ro
-      - phpsocket-data:/var/run/php
     networks:
       - wp-network
     deploy:
@@ -178,8 +176,6 @@ volumes:
   wordpress-data:
     driver: local
   filebrowser-data:
-    driver: local
-  phpsocket-data:
     driver: local
 
 # Project Networks
