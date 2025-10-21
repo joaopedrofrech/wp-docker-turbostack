@@ -147,7 +147,7 @@ services:
     restart: unless-stopped
     volumes:
       - wordpress-data:/srv
-      - ./filebrowser.json:/.filebrowser.json
+      - ./filebrowser.json:/config/settings.json
       - filebrowser-data:/database
     networks:
       - wp-network
