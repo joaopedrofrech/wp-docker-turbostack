@@ -1,6 +1,6 @@
 # 🚀 WP Docker TurboStack
 
-TurboStack is a modern, production-ready WordPress stack designed for maximum performance, security and scalability. It combines NGINX, Rocket-NGINX, MariaDB, Redis, and custom adjustments into a single, seamless Docker environment.
+TurboStack is a modern, production-ready WordPress stack designed for maximum performance, security and scalability, **powered by leading open-source technologies**. It combines NGINX, Rocket-NGINX, MariaDB, Redis, and custom adjustments into a single, seamless Docker environment.
 
 With deep integration, TurboStack delivers instant static caching, edge delivery, robust security, and zero-hassle management. It is tuned for real-world scale, reliability, and developer experience.
 
@@ -107,10 +107,11 @@ TZ=your-timezone
 
 - **`.env` Setup:** Copy `.env.example` to `.env` and fill in all secrets. Never commit `.env` to version control.
 - **Cloudflare Integration:** This stack is designed to run with Cloudflare. Always enable the **Cloudflare Proxy** (orange-cloud) for performance, caching, and to activate the **WAF** for threat protection.
-- **Secure Access (Zero Trust):** Use **Cloudflare Zero Trust** to protect all sensitive login pages. This is the recommended method for securing `wp-admin`, **Adminer**, and **File Browser** instead of exposing them to the public internet or relying on Basic Auth.
+- **Secure Access (Zero Trust):** Use **Cloudflare Zero Trust** or setup Basic Auth to protect all sensitive login pages. This is the recommended method for securing `wp-admin`, **Adminer**, and **File Browser**.
 - **Local vs. Production:** Use `docker-compose.local.yml` for local development only (e.g., `docker-compose -f docker-compose.yml -f docker-compose.local.yml up`). Never use local overrides in production.
 - **Must-Use Plugins:** The auto-mounted plugins (`turbostack-optimizations.php`, `wordpress-docker-bridge.php`) are critical for performance, security, and a correct Docker/Cloudflare/NGINX integration.
 - **Volumes:** All persistent data (DB, uploads, configs) is stored in named Docker volumes. Ensure you have a regular backup strategy for them.
+- **WP Rocket (Not Included):** The `Rocket-NGINX` config requires the **WP Rocket** plugin installed in WordPress. This stack does not provide the plugin license or files.
 
 ---
 
