@@ -122,15 +122,16 @@ services:
           memory: 64M
 
 
-  # Adminer - Database Management
+# Adminer - Database Management
   adminer:
-    image: adminer:latest
+    image: dockette/adminer:mysql
     restart: unless-stopped
     depends_on:
       - mariadb
     environment:
       ADMINER_DEFAULT_SERVER: mariadb
       ADMINER_DESIGN: pepa-linha-dark
+      ADMINER_TITLE: Database
     networks:
       - wp-network
     deploy:
@@ -145,7 +146,6 @@ services:
   filebrowser:
     image: filebrowser/filebrowser:latest
     restart: unless-stopped
-    entrypoint: ["/bin/sh", "-c", "rm -f /database/filebrowser.db && filebrowser"]
     volumes:
       - wordpress-data:/srv
       - ./filebrowser.json:/config/settings.json
