@@ -131,7 +131,6 @@ services:
     environment:
       ADMINER_DEFAULT_SERVER: mariadb
       ADMINER_DESIGN: pepa-linha-dark
-      ADMINER_TITLE: Database
     networks:
       - wp-network
     deploy:
