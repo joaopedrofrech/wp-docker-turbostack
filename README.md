@@ -1,8 +1,8 @@
 # 🚀 WP Docker TurboStack
 
-TurboStack is a modern, production-ready WordPress stack designed for developers and teams who demand maximum performance, security, and automation. It combines the best open-source technologies—NGINX, Rocket-NGINX, Cloudflare, MariaDB, Redis, and custom scripts—into a single, seamless Docker environment.
+TurboStack is a modern, production-ready WordPress stack designed for maximum performance, security and scalability. It combines NGINX, Rocket-NGINX, MariaDB, Redis, and custom adjustments into a single, seamless Docker environment.
 
-With deep integration between all components, TurboStack delivers instant static caching, edge delivery, robust security, and zero-hassle management. Every detail is tuned for real-world scale, reliability, and developer experience.
+With deep integration, TurboStack delivers instant static caching, edge delivery, robust security, and zero-hassle management. It is tuned for real-world scale, reliability, and developer experience.
 
 ---
 
@@ -20,36 +20,23 @@ With deep integration between all components, TurboStack delivers instant static
 
 ---
 
-## 🥇 Advantages
+## 🎯 Target Deployment
 
-**Performance**
-- Multi-layer cache: Cloudflare (edge), NGINX + Rocket-NGINX (static HTML), WP Rocket (page), Redis (object)
-- NGINX and Rocket-NGINX serve cached pages instantly, bypassing PHP for max speed
-- Cloudflare proxy and HTTP/3 for global, low-latency delivery
-- Optimized MariaDB and Redis for fast queries and persistent storage
-
-**Security**
-- Hardened NGINX configs, strict security headers, rate limiting
-- Cloudflare DDoS protection, proxy, and SSL/TLS
-- Docker isolation for all services
-- Adminer and File Browser protected with authentication and best practices
-
-**Automation & Reliability**
-- One-command setup for full stack
-- Custom scripts for MariaDB auto-setup and external WP cron (real cron reliability)
-- Must-use plugins for Docker/Nginx/Cloudflare integration and internal request handling
-- All configs production-ready, but easily extensible for local development
+* **Platform-Optimized:** Designed for deployment on Docker-native platforms like **Dokploy** and **Coolify**, integrating smoothly with their Traefik-based environments.
+* **Cloudflare:** Built to be fully proxied by **Cloudflare**, leveraging its CDN, WAF, and Zero Trust services for essential security and performance.
 
 ---
 
-## ⚡ Scripts & WP Cron
+## 🥇 Core Advantages
 
-- `scripts/wp-cron-external.sh`: Runs WordPress cron jobs externally via HTTP, ensuring scheduled tasks always run (even with full static cache). Recommended for production—just add to your system crontab.
-- `scripts/setup-mariadb.sh`: Automatically tests and initializes MariaDB, creates WordPress DB/user if needed. No manual DB setup required. For local test only.
-- Both scripts are designed for automation, reliability, and compatibility with any Docker platform.
+* **Multi-Layer Caching:** Cloudflare (Edge), NGINX + Rocket-NGINX (Static HTML), WP Rocket (Page), and Redis (Object).
+* **Extreme Performance:** NGINX/Rocket-NGINX serve cached pages instantly, bypassing PHP execution.
+* **Hardened Security:** Tuned NGINX configs (headers, rate limiting) plus Cloudflare's DDoS/WAF proxy.
+* **Smart Automation:** Fast setup, auto-init scripts for MariaDB, and a reliable external cron system.
+* **Docker-Ready:** Includes essential Must-Use plugins (like `wordpress-docker-bridge.php`) to fix loopbacks and ensure correct NGINX/Cloudflare integration.
+* **Extra Tools:** Adminer and File Browser to manage files and database.
 
 ---
-
 
 ## 🚦 Quick Start
 
@@ -93,16 +80,9 @@ With deep integration between all components, TurboStack delivers instant static
 
 WordPress cron is **DISABLED** for performance (doesn't run on every visit).
 
-**Server Setup:**
-```sh
-# Copy script to server
-scp scripts/wp-cron-external.sh root@server:/usr/local/bin/
-chmod +x /usr/local/bin/wp-cron-external.sh
-
 # Add to system crontab (every 3 hours)
 0 */3 * * * /usr/local/bin/wp-cron-external.sh >> /var/log/wp-cron.log 2>&1
 ```
-See `scripts/README.md` for detailed script documentation.
 
 ---
 
@@ -111,52 +91,43 @@ See `scripts/README.md` for detailed script documentation.
 Set these in your `.env` file:
 
 ```env
-# Project
-PROJECT_NAME=mysite
-DOMAIN=yourdomain.com
+# Database Settings (CHANGE ALL PASSWORDS)
+MYSQL_ROOT_PASSWORD=your-root-password-here
+MYSQL_DATABASE=wp-site
+MYSQL_USER=wp-user
+MYSQL_PASSWORD=your-password-here
 
-# Database (CHANGE ALL PASSWORDS)
-MYSQL_ROOT_PASSWORD=secure_root_password
-MYSQL_DATABASE=wordpress
-MYSQL_USER=wordpress
-MYSQL_PASSWORD=secure_wp_password
-
-# Admin Tools Auth (generate: htpasswd -nbB admin password)
-ADMINER_AUTH=admin:$2y$10$hash...
-FILES_AUTH=admin:$2y$10$hash...
-```
-
-**Generate Auth Hash:**
-```sh
-docker run --rm httpd:2.4-alpine htpasswd -nbB admin yourpassword
+# Extra settings
+TZ=your-timezone
 ```
 
 ---
 
 ## 📝 Usage & Best Practices
 
-- **.env setup:** Copy `.env.example` to `.env` and fill in all secrets, DB credentials, project/domain names. Never commit your real `.env` to version control.
-- **Domain config:** Set `DOMAIN` and `PROJECT_NAME` in `.env` for correct routing. NGINX and Traefik use these for all service URLs and SSL.
-- **Compose local:** For local development, use `docker-compose -f docker-compose.yml -f docker-compose.local.yml up` to enable local-only features, mounts, or debugging. Never mix local overrides in production.
-- **Traefik/Cloudflare:** The stack is ready for Traefik as reverse proxy, with compose labels for HTTPS, domain routing, and Cloudflare DNS challenge for SSL.
-- **Authentication:** Adminer and File Browser are protected with HTTP Basic Auth. Set `ADMINER_AUTH` and `FILES_AUTH` in `.env` for secure access.
-- **Plugins:** Must-use plugins (`turbostack-optimizations.php`, `wordpress-docker-bridge.php`) are auto-mounted for performance, security, and Docker/Cloudflare/NGINX integration.
-- **Volumes:** All persistent data (DB, cache, uploads, configs) is stored in named Docker volumes. Review and back up as needed.
-- **Production tips:** Pin image tags for critical environments, review all environment variables and volumes before deploy, and always use Cloudflare proxy for best security/performance.
+- **`.env` Setup:** Copy `.env.example` to `.env` and fill in all secrets. Never commit `.env` to version control.
+- **Cloudflare Integration:** This stack is designed to run with Cloudflare. Always enable the **Cloudflare Proxy** (orange-cloud) for performance, caching, and to activate the **WAF** for threat protection.
+- **Secure Access (Zero Trust):** Use **Cloudflare Zero Trust** to protect all sensitive login pages. This is the recommended method for securing `wp-admin`, **Adminer**, and **File Browser** instead of exposing them to the public internet or relying on Basic Auth.
+- **Local vs. Production:** Use `docker-compose.local.yml` for local development only (e.g., `docker-compose -f docker-compose.yml -f docker-compose.local.yml up`). Never use local overrides in production.
+- **Must-Use Plugins:** The auto-mounted plugins (`turbostack-optimizations.php`, `wordpress-docker-bridge.php`) are critical for performance, security, and a correct Docker/Cloudflare/NGINX integration.
+- **Volumes:** All persistent data (DB, uploads, configs) is stored in named Docker volumes. Ensure you have a regular backup strategy for them.
+
+---
+
+## 🧮 Resources adjustments
+
+This stack is pre-configured with optimized resource limits to enable deploying multiple WordPress sites on a single server. Adjust resource values in docker-compose.yml to match your host's capacity.
+
+---
+
+## ⚖️ Trademarks & Disclaimer
+
+All product names, logos, and brands are property of their respective owners.
+
+All company, product and service names used in this project are for identification and compatibility purposes only. Use of these names, logos, and brands does not imply endorsement or official partnership.
+
+This project is not affiliated with, endorsed by, or sponsored by Cloudflare, Inc., Dokploy, Coolify, Automattic (WordPress), WP Rocket, or any other trademark holder mentioned.
 
 ---
 
 **TurboStack: The fastest, most secure, and most scalable way to run WordPress on Docker.**
-
----
-
-## 🧮 Resource Limits & Multi-Site Scalability
-
-This stack is pre-configured with optimized resource limits to enable the deployment of multiple WordPress sites on a single server. The default memory and performance settings are designed to balance efficiency and stability when running several sites in parallel, making it easy to scale horizontally as your needs grow.
-
-**Key points:**
-- The configuration is tuned for running many sites together.
-- Resource limits are enforced at the container level, so no single site or service can exhaust your server.
-- If you plan to host only one site per server, you can safely increase the limits for even more performance.
-- Always adjust resource values to match your actual server capacity and the number of sites you plan to deploy.
-- For true scalability, monitor real usage (`docker stats`) and adjust limits as you add or remove sites.

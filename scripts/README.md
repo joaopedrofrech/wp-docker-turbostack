@@ -2,8 +2,6 @@
 
 Utility scripts for WordPress Docker stack management.
 
-## Available Scripts
-
 ### `setup-mariadb.sh`
 **MariaDB connection test for local development**
 
