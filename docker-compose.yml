@@ -135,7 +135,7 @@ services:
     environment:
       ADMINER_DEFAULT_SERVER: mariadb
       ADMINER_DESIGN: pepa-linha-dark
-      WORKERS: 1
+      PHP_CLI_SERVER_WORKERS: 1
     networks:
       - wp-network
     deploy:
@@ -144,7 +144,7 @@ services:
           memory: 128M
           cpus: "0.25"
         reservations:
-          memory: 10M
+          memory: 16M
 
 
   # File Browser
