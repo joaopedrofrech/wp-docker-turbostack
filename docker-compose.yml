@@ -31,8 +31,9 @@ services:
       resources:
         limits:
           memory: 512M
+          cpus: "0.50"
         reservations:
-          memory: 256M
+          memory: 128M
 
 
   # Redis - Object Cache
@@ -52,9 +53,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
+          memory: 128M
+          cpus: "0.25"
         reservations:
-          memory: 64M
+          memory: 10M
 
 
   # WordPress with PHP-FPM
@@ -97,8 +99,9 @@ services:
       resources:
         limits:
           memory: 512M
+          cpus: "0.50"
         reservations:
-          memory: 256M
+          memory: 100M
 
 
   # Nginx - Web Server
@@ -118,8 +121,9 @@ services:
       resources:
         limits:
           memory: 256M
+          cpus: "0.50"
         reservations:
-          memory: 64M
+          memory: 10M
 
 
 # Adminer - Database Management
@@ -131,14 +135,16 @@ services:
     environment:
       ADMINER_DEFAULT_SERVER: mariadb
       ADMINER_DESIGN: pepa-linha-dark
+      WORKERS: 1
     networks:
       - wp-network
     deploy:
       resources:
         limits:
-          memory: 256M
+          memory: 128M
+          cpus: "0.25"
         reservations:
-          memory: 64M
+          memory: 10M
 
 
   # File Browser
@@ -154,9 +160,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
+          memory: 512M
+          cpus: "0.25"
         reservations:
-          memory: 64M
+          memory: 16M
 
 
  # Project Volumes
