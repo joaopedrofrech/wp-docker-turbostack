@@ -33,7 +33,7 @@ services:
           memory: 512M
           cpus: "0.50"
         reservations:
-          memory: 128M
+          memory: 100M
 
 
   # Redis - Object Cache
