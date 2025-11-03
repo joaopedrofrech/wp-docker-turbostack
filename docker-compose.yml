@@ -98,10 +98,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 400M
+          memory: 512M
           cpus: "0.50"
         reservations:
-          memory: 80M
+          memory: 100M
 
 
   # Nginx - Web Server
