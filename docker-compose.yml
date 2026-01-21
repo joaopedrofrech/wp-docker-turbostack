@@ -13,12 +13,12 @@ services:
     networks:
       - wp-network
     command: >
-      --innodb-buffer-pool-size=96M
+      --innodb-buffer-pool-size=64M
       --table-open-cache=400
       --table-definition-cache=400
       --innodb-log-file-size=16M
       --innodb-log-buffer-size=8M
-      --max-connections=50
+      --max-connections=30
       --thread-cache-size=8
       --sort-buffer-size=256K
       --read-buffer-size=128K
@@ -27,10 +27,11 @@ services:
       --wait-timeout=600
       --interactive-timeout=600
       --skip-name-resolve
+      --performance_schema=OFF
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: 256M
           cpus: "0.50"
         reservations:
           memory: 100M
