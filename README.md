@@ -22,7 +22,7 @@ With deep integration, TurboStack delivers instant static caching, edge delivery
 
 ## 🎯 Target Deployment
 
-* **Platform-Optimized:** Designed for deployment on Docker-native platforms like **Dokploy** and **Coolify**, integrating smoothly with their Traefik-based environments.
+* **Platform-Optimized:** Designed for deployment on **Dokploy**, integrating smoothly with their Traefik-based environments. But it also works anywhere.
 * **Cloudflare:** Built to be fully proxied by **Cloudflare**, leveraging its CDN, WAF, and Zero Trust services for essential security and performance.
 
 ---
@@ -92,10 +92,10 @@ Set these in your `.env` file:
 
 ```env
 # Database Settings (CHANGE ALL PASSWORDS)
-MYSQL_ROOT_PASSWORD=your-root-password-here
-MYSQL_DATABASE=wp-site
-MYSQL_USER=wp-user
-MYSQL_PASSWORD=your-password-here
+MYSQL_ROOT_PASSWORD=service-root
+MYSQL_DATABASE=username-db
+MYSQL_USER=username-user
+MYSQL_PASSWORD=password
 
 # Extra settings
 TZ=your-timezone
