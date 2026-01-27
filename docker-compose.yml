@@ -72,6 +72,7 @@ services:
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
       WORDPRESS_DB_USER: ${MYSQL_USER}
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WP_ROCKET_CF_API_KEY: ${CF_API_KEY}
       WORDPRESS_CONFIG_EXTRA: |
         if (!defined('WP_DEBUG')) define('WP_DEBUG', false);
         if (!defined('WP_DEBUG_LOG')) define('WP_DEBUG_LOG', false);
@@ -89,6 +90,12 @@ services:
         if (!defined('FS_METHOD')) define('FS_METHOD', 'direct');
         if (!defined('WP_HTTP_BLOCK_EXTERNAL')) define('WP_HTTP_BLOCK_EXTERNAL', false);
         if (!defined('WP_ACCESSIBLE_HOSTS')) define('WP_ACCESSIBLE_HOSTS', 'nginx,localhost,127.0.0.1');
+        
+        /* API Key Cloudflare - WP Rocket */
+        if (getenv('WP_ROCKET_CF_API_KEY')) {
+            define('WP_ROCKET_CF_API_KEY', getenv('WP_ROCKET_CF_API_KEY'));
+            define('WP_ROCKET_CF_API_KEY_HIDDEN', true);
+        }
     volumes:
       - wordpress-data:/var/www/html
       - ./wordpress/php.ini:/usr/local/etc/php/conf.d/custom.ini
