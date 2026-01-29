@@ -150,23 +150,26 @@ services:
 
   # File Browser
   filebrowser:
-    image: filebrowser/filebrowser:latest
+    image: filebrowser/filebrowser:s6
     restart: unless-stopped
-    user: "0:0"
     ports:
       - "8082:80" # Local Access
+    environment:
+      - PUID=33
+      - PGID=33
     volumes:
       - wordpress-data:/srv
-      - ./filebrowser.json:/.filebrowser.json
+      - ./filebrowser.json:/config/settings.json
       - filebrowser-data:/database
     networks:
       - wp-network
     deploy:
       resources:
         limits:
-          memory: 256M
+          memory: 128M
+          cpus: "0.5"
         reservations:
-          memory: 64M
+          memory: 16M
 
 
  # Project Volumes
