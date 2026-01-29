@@ -13,7 +13,7 @@ services:
     networks:
       - wp-network
     command: >
-      --innodb-buffer-pool-size=64M
+      --innodb-buffer-pool-size=96M
       --table-open-cache=400
       --table-definition-cache=400
       --innodb-log-file-size=16M
@@ -32,7 +32,7 @@ services:
       resources:
         limits:
           memory: 256M
-          cpus: "0.50"
+          cpus: "1"
         reservations:
           memory: 100M
 
@@ -55,14 +55,14 @@ services:
       resources:
         limits:
           memory: 128M
-          cpus: "0.25"
+          cpus: "0.5"
         reservations:
           memory: 10M
 
 
   # WordPress with PHP-FPM
   wordpress:
-    image: wordpress:fpm-alpine
+    image: wordpress:fpm
     restart: unless-stopped
     depends_on:
       - mariadb
@@ -90,6 +90,7 @@ services:
         if (!defined('FS_METHOD')) define('FS_METHOD', 'direct');
         if (!defined('WP_HTTP_BLOCK_EXTERNAL')) define('WP_HTTP_BLOCK_EXTERNAL', false);
         if (!defined('WP_ACCESSIBLE_HOSTS')) define('WP_ACCESSIBLE_HOSTS', 'nginx,localhost,127.0.0.1');
+        if (!defined('MYSQL_CLIENT_FLAGS')) define('MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT);
         
         /* API Key Cloudflare - WP Rocket */
         if (getenv('WP_ROCKET_CF_API_KEY')) {
@@ -107,7 +108,7 @@ services:
       resources:
         limits:
           memory: 512M
-          cpus: "0.50"
+          cpus: "1"
         reservations:
           memory: 100M
 
@@ -150,7 +151,7 @@ services:
       resources:
         limits:
           memory: 128M
-          cpus: "0.25"
+          cpus: "0.5"
         reservations:
           memory: 16M
 
@@ -169,7 +170,7 @@ services:
       resources:
         limits:
           memory: 128M
-          cpus: "0.25"
+          cpus: "0.5"
         reservations:
           memory: 16M
 
