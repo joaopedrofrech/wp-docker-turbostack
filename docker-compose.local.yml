@@ -93,7 +93,6 @@ services:
       - wordpress-data:/var/www/html
       - ./wordpress/php.ini:/usr/local/etc/php/conf.d/custom.ini
       - ./wordpress/php-fpm.conf:/usr/local/etc/php-fpm.d/zzz-custom.conf
-      - ./wordpress/mu-plugins:/var/www/html/wp-content/mu-plugins:ro
     networks:
       - wp-network
     deploy:
@@ -153,6 +152,7 @@ services:
   filebrowser:
     image: filebrowser/filebrowser:latest
     restart: unless-stopped
+    user: "0:0"
     ports:
       - "8082:80" # Local Access
     volumes:
