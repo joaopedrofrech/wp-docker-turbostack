@@ -90,7 +90,6 @@ services:
         if (!defined('FS_METHOD')) define('FS_METHOD', 'direct');
         if (!defined('WP_HTTP_BLOCK_EXTERNAL')) define('WP_HTTP_BLOCK_EXTERNAL', false);
         if (!defined('WP_ACCESSIBLE_HOSTS')) define('WP_ACCESSIBLE_HOSTS', 'nginx,localhost,127.0.0.1');
-        if (!defined('MYSQL_CLIENT_FLAGS')) define('MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT);
         
         /* API Key Cloudflare - WP Rocket */
         if (getenv('WP_ROCKET_CF_API_KEY')) {
@@ -101,7 +100,6 @@ services:
       - wordpress-data:/var/www/html
       - ./wordpress/php.ini:/usr/local/etc/php/conf.d/custom.ini
       - ./wordpress/php-fpm.conf:/usr/local/etc/php-fpm.d/zzz-custom.conf
-      - ./wordpress/mu-plugins:/var/www/html/wp-content/mu-plugins:ro
     networks:
       - wp-network
     deploy:
@@ -160,6 +158,7 @@ services:
   filebrowser:
     image: filebrowser/filebrowser:latest
     restart: unless-stopped
+    user: "0:0"
     volumes:
       - wordpress-data:/srv
       - ./filebrowser.json:/config/settings.json
