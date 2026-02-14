@@ -135,7 +135,7 @@ services:
 
 # Adminer - Database Management
   adminer:
-    image: dockette/adminer:mysql
+    image: dockette/adminer:full
     restart: unless-stopped
     depends_on:
       - mariadb
