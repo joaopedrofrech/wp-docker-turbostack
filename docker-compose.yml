@@ -43,10 +43,12 @@ services:
     image: wordpress:fpm
     restart: unless-stopped
     command: >
-      sh -c "apt-get update && apt-get install -y $PHPIZE_DEPS 
-      && pecl install apcu 
-      && docker-php-ext-enable apcu 
-      && docker-php-entrypoint php-fpm"
+      sh -c "
+      if ! php -m | grep -q 'apcu'; then
+        apt-get update && apt-get install -y $PHPIZE_DEPS
+        pecl install apcu && docker-php-ext-enable apcu
+      fi
+      docker-php-entrypoint php-fpm"
     depends_on:
       - mariadb
     environment:
