@@ -39,30 +39,6 @@ services:
           memory: 256M
 
 
-  # Redis - Object Cache
-  redis:
-    image: redis:8.2.2-alpine
-    restart: unless-stopped
-    ports:
-      - "6379:6379"  # Local Access
-    command: >
-      redis-server
-      --maxmemory 64mb
-      --maxmemory-policy allkeys-lru
-      --save ""
-      --appendonly no
-    volumes:
-      - redis-data:/data
-    networks:
-      - wp-network
-    deploy:
-      resources:
-        limits:
-          memory: 256M
-        reservations:
-          memory: 64M
-
-
   # WordPress com PHP-FPM
   wordpress:
     image: wordpress:fpm-alpine
@@ -81,11 +57,6 @@ services:
         if (!defined('WP_DEBUG_DISPLAY')) define('WP_DEBUG_DISPLAY', false);
         if (!defined('WP_CACHE')) define('WP_CACHE', true);
         if (!defined('DISABLE_WP_CRON')) define('DISABLE_WP_CRON', true);
-        if (!defined('WP_REDIS_HOST')) define('WP_REDIS_HOST', 'redis');
-        if (!defined('WP_REDIS_PORT')) define('WP_REDIS_PORT', 6379);
-        if (!defined('WP_REDIS_TIMEOUT')) define('WP_REDIS_TIMEOUT', 1);
-        if (!defined('WP_REDIS_READ_TIMEOUT')) define('WP_REDIS_READ_TIMEOUT', 1);
-        if (!defined('WP_REDIS_DATABASE')) define('WP_REDIS_DATABASE', 0);
         if (!defined('FS_METHOD')) define('FS_METHOD', 'direct');
         if (!defined('WP_HTTP_BLOCK_EXTERNAL')) define('WP_HTTP_BLOCK_EXTERNAL', false);
         if (!defined('WP_ACCESSIBLE_HOSTS')) define('WP_ACCESSIBLE_HOSTS', 'nginx,localhost,127.0.0.1');
@@ -175,8 +146,6 @@ services:
  # Project Volumes
 volumes:
   mariadb-data:
-    driver: local
-  redis-data:
     driver: local
   wordpress-data:
     driver: local
