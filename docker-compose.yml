@@ -38,36 +38,12 @@ services:
           memory: 100M
 
 
-  # Redis - Object Cache
-  redis:
-    image: redis:8.2.2-alpine
-    restart: unless-stopped
-    command: >
-      redis-server
-      --maxmemory 64mb
-      --maxmemory-policy allkeys-lru
-      --save ""
-      --appendonly no
-    volumes:
-      - redis-data:/data
-    networks:
-      - wp-network
-    deploy:
-      resources:
-        limits:
-          memory: 64M
-          cpus: "0.5"
-        reservations:
-          memory: 12M
-
-
   # WordPress with PHP-FPM
   wordpress:
     image: wordpress:fpm
     restart: unless-stopped
     depends_on:
       - mariadb
-      - redis
     environment:
       WORDPRESS_DB_HOST: mariadb:3306
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
@@ -83,11 +59,6 @@ services:
         if (!defined('DISALLOW_FILE_EDIT')) define('DISALLOW_FILE_EDIT', true);
         if (!defined('FORCE_SSL_LOGIN')) define('FORCE_SSL_LOGIN', true);
         if (!defined('FORCE_SSL_ADMIN')) define('FORCE_SSL_ADMIN', true);
-        if (!defined('WP_REDIS_HOST')) define('WP_REDIS_HOST', 'redis');
-        if (!defined('WP_REDIS_PORT')) define('WP_REDIS_PORT', 6379);
-        if (!defined('WP_REDIS_TIMEOUT')) define('WP_REDIS_TIMEOUT', 1);
-        if (!defined('WP_REDIS_READ_TIMEOUT')) define('WP_REDIS_READ_TIMEOUT', 1);
-        if (!defined('WP_REDIS_DATABASE')) define('WP_REDIS_DATABASE', 0);
         if (!defined('FS_METHOD')) define('FS_METHOD', 'direct');
         if (!defined('WP_HTTP_BLOCK_EXTERNAL')) define('WP_HTTP_BLOCK_EXTERNAL', false);
         if (!defined('WP_ACCESSIBLE_HOSTS')) define('WP_ACCESSIBLE_HOSTS', 'nginx,localhost,127.0.0.1');
@@ -180,8 +151,6 @@ services:
  # Project Volumes
 volumes:
   mariadb-data:
-    driver: local
-  redis-data:
     driver: local
   wordpress-data:
     driver: local
