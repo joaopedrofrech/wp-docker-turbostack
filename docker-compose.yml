@@ -62,6 +62,9 @@ services:
         if (!defined('FS_METHOD')) define('FS_METHOD', 'direct');
         if (!defined('WP_HTTP_BLOCK_EXTERNAL')) define('WP_HTTP_BLOCK_EXTERNAL', false);
         if (!defined('WP_ACCESSIBLE_HOSTS')) define('WP_ACCESSIBLE_HOSTS', 'nginx,localhost,127.0.0.1');
+
+        /* SQLite Object Cache MMAP - Performance */
+        if (!defined('WP_SQLITE_OBJECT_CACHE_MMAP_SIZE')) define('WP_SQLITE_OBJECT_CACHE_MMAP_SIZE', 16);
         
         /* API Key Cloudflare - WP Rocket */
         if (getenv('WP_ROCKET_CF_API_KEY')) {
