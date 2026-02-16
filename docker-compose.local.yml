@@ -45,7 +45,6 @@ services:
     restart: unless-stopped
     depends_on:
       - mariadb
-      - redis
     environment:
       WORDPRESS_DB_HOST: mariadb:3306
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wp-site-local}
