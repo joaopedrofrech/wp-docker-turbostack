@@ -69,6 +69,11 @@ services:
         if (!defined('WP_POST_REVISIONS')) define('WP_POST_REVISIONS', ${WP_POST_REVISIONS});
         if (!defined('EMPTY_TRASH_DAYS')) define('EMPTY_TRASH_DAYS', ${EMPTY_TRASH_DAYS});
 
+        /* PHP Upload & Limits */
+        @ini_set('upload_max_filesize', '${PHP_UPLOAD_MAX_FILESIZE}');
+        @ini_set('post_max_size', '${PHP_POST_MAX_SIZE}');
+        @ini_set('max_execution_time', '300');
+
         /* Security & Updates */
         if (!defined('AUTOMATIC_UPDATER_DISABLED')) define('AUTOMATIC_UPDATER_DISABLED', ${AUTOMATIC_UPDATER_DISABLED});
         if (!defined('WP_AUTO_UPDATE_CORE')) define('WP_AUTO_UPDATE_CORE', ${WP_AUTO_UPDATE_CORE});
@@ -80,6 +85,11 @@ services:
         if (getenv('WP_ROCKET_CF_API_KEY')) {
             define('WP_ROCKET_CF_API_KEY', getenv('WP_ROCKET_CF_API_KEY'));
             define('WP_ROCKET_CF_API_KEY_HIDDEN', true);
+        }
+
+        /* Set Cloudflare Real IP */
+        if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
         }
     volumes:
       - wordpress-data:/var/www/html
