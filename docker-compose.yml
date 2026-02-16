@@ -87,9 +87,9 @@ services:
             define('WP_ROCKET_CF_API_KEY_HIDDEN', true);
         }
 
-        /* Set Cloudflare Real IP */
-        if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
-            $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
+        /* Fix Cloudflare Real IP */
+        if (isset($$_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            $$_SERVER['REMOTE_ADDR'] = $$-SERVER['HTTP_CF_CONNECTING_IP'];
         }
     volumes:
       - wordpress-data:/var/www/html
