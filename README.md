@@ -14,7 +14,6 @@ With deep integration, TurboStack delivers instant static caching, edge delivery
 | NGINX            | 1.28      | Web server, static/cache, security         |
 | Rocket-NGINX     | 3.1.1     | Advanced static cache for WP Rocket        |
 | MariaDB          | 11.8      | Database, persistent storage               |
-| Redis            | 8.2       | Object cache for WordPress                 |
 | Adminer          | latest    | DB management UI                           |
 | File Browser     | latest    | Web file manager                           |
 
@@ -29,7 +28,7 @@ With deep integration, TurboStack delivers instant static caching, edge delivery
 
 ## 🥇 Core Advantages
 
-* **Multi-Layer Caching:** Cloudflare (Edge), NGINX + Rocket-NGINX (Static HTML), WP Rocket (Page), and Redis (Object).
+* **Multi-Layer Caching:** Cloudflare (Edge), NGINX + Rocket-NGINX (Static HTML), WP Rocket (Page), and SqLite Object Cache.
 * **Extreme Performance:** NGINX/Rocket-NGINX serve cached pages instantly, bypassing PHP execution.
 * **Hardened Security:** Tuned NGINX configs (headers, rate limiting) plus Cloudflare's DDoS/WAF proxy.
 * **Smart Automation:** Fast setup, auto-init scripts for MariaDB, and a reliable external cron system.
