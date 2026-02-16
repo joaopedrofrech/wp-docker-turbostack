@@ -13,20 +13,20 @@ services:
     networks:
       - wp-network
     command: >
-      --innodb-buffer-pool-size=64M
-      --innodb-buffer-pool-instances=1
-      --table-open-cache=400
-      --table-definition-cache=400
-      --innodb-log-file-size=16M
-      --innodb-log-buffer-size=2M
-      --max-connections=15
-      --thread-cache-size=4
-      --sort-buffer-size=512K
-      --read-buffer-size=256K
-      --read-rnd-buffer-size=256K
-      --max-allowed-packet=64M
-      --wait-timeout=120
-      --interactive-timeout=240
+      --innodb-buffer-pool-size=${INNODB_BUFFER_POOL_SIZE}
+      --innodb-buffer-pool-instances=${INNODB_BUFFER_POOL_INSTANCES}
+      --table-open-cache=${TABLE_OPEN_CACHE}
+      --table-definition-cache=${TABLE_DEFINITION_CACHE}
+      --innodb-log-file-size=${INNODB_LOG_FILE_SIZE}
+      --innodb-log-buffer-size=${INNODB_LOG_BUFFER_SIZE}
+      --max-connections=${MAX_CONNECTIONS}
+      --thread-cache-size=${THREAD_CACHE_SIZE}
+      --sort-buffer-size=${SORT_BUFFER_SIZE}
+      --read-buffer-size=${READ_BUFFER_SIZE}
+      --read-rnd-buffer-size=${READ_RND_BUFFER_SIZE}
+      --max-allowed-packet=${MAX_ALLOWED_PACKET}
+      --wait-timeout=${WAIT_TIMEOUT}
+      --interactive-timeout=${INTERACTIVE_TIMEOUT}
       --skip-name-resolve
       --performance_schema=OFF
     deploy:
@@ -51,20 +51,20 @@ services:
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
       WP_ROCKET_CF_API_KEY: ${CF_API_KEY}
       WORDPRESS_CONFIG_EXTRA: |
-        if (!defined('WP_DEBUG')) define('WP_DEBUG', false);
-        if (!defined('WP_DEBUG_LOG')) define('WP_DEBUG_LOG', false);
-        if (!defined('WP_DEBUG_DISPLAY')) define('WP_DEBUG_DISPLAY', false);
-        if (!defined('WP_CACHE')) define('WP_CACHE', true);
-        if (!defined('DISABLE_WP_CRON')) define('DISABLE_WP_CRON', true);
-        if (!defined('DISALLOW_FILE_EDIT')) define('DISALLOW_FILE_EDIT', true);
-        if (!defined('FORCE_SSL_LOGIN')) define('FORCE_SSL_LOGIN', true);
-        if (!defined('FORCE_SSL_ADMIN')) define('FORCE_SSL_ADMIN', true);
-        if (!defined('FS_METHOD')) define('FS_METHOD', 'direct');
-        if (!defined('WP_HTTP_BLOCK_EXTERNAL')) define('WP_HTTP_BLOCK_EXTERNAL', false);
-        if (!defined('WP_ACCESSIBLE_HOSTS')) define('WP_ACCESSIBLE_HOSTS', 'nginx,localhost,127.0.0.1');
+        if (!defined('WP_DEBUG')) define('WP_DEBUG', ${WP_DEBUG});
+        if (!defined('WP_DEBUG_LOG')) define('WP_DEBUG_LOG', ${WP_DEBUG_LOG});
+        if (!defined('WP_DEBUG_DISPLAY')) define('WP_DEBUG_DISPLAY', ${WP_DEBUG_DISPLAY});
+        if (!defined('WP_CACHE')) define('WP_CACHE', ${WP_CACHE});
+        if (!defined('DISABLE_WP_CRON')) define('DISABLE_WP_CRON', ${DISABLE_WP_CRON});
+        if (!defined('DISALLOW_FILE_EDIT')) define('DISALLOW_FILE_EDIT', ${DISALLOW_FILE_EDIT});
+        if (!defined('FORCE_SSL_LOGIN')) define('FORCE_SSL_LOGIN', ${FORCE_SSL_LOGIN});
+        if (!defined('FORCE_SSL_ADMIN')) define('FORCE_SSL_ADMIN', ${FORCE_SSL_ADMIN});
+        if (!defined('FS_METHOD')) define('FS_METHOD', '${FS_METHOD}');
+        if (!defined('WP_HTTP_BLOCK_EXTERNAL')) define('WP_HTTP_BLOCK_EXTERNAL', ${WP_HTTP_BLOCK_EXTERNAL});
+        if (!defined('WP_ACCESSIBLE_HOSTS')) define('WP_ACCESSIBLE_HOSTS', '${WP_ACCESSIBLE_HOSTS}');
 
         /* SQLite Object Cache MMAP - Performance */
-        if (!defined('WP_SQLITE_OBJECT_CACHE_MMAP_SIZE')) define('WP_SQLITE_OBJECT_CACHE_MMAP_SIZE', 16);
+        if (!defined('WP_SQLITE_OBJECT_CACHE_MMAP_SIZE')) define('WP_SQLITE_OBJECT_CACHE_MMAP_SIZE', ${WP_SQLITE_OBJECT_CACHE_MMAP_SIZE:-0});
         
         /* API Key Cloudflare - WP Rocket */
         if (getenv('WP_ROCKET_CF_API_KEY')) {
