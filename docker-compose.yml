@@ -17,14 +17,14 @@ services:
       --innodb-buffer-pool-instances=1
       --table-open-cache=400
       --table-definition-cache=400
-      --innodb-log-file-size=8M
+      --innodb-log-file-size=16M
       --innodb-log-buffer-size=2M
       --max-connections=15
       --thread-cache-size=4
       --sort-buffer-size=512K
       --read-buffer-size=256K
       --read-rnd-buffer-size=256K
-      --max-allowed-packet=32M
+      --max-allowed-packet=64M
       --wait-timeout=120
       --interactive-timeout=240
       --skip-name-resolve
