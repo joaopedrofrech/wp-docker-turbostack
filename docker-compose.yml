@@ -63,6 +63,16 @@ services:
         if (!defined('WP_HTTP_BLOCK_EXTERNAL')) define('WP_HTTP_BLOCK_EXTERNAL', ${WP_HTTP_BLOCK_EXTERNAL});
         if (!defined('WP_ACCESSIBLE_HOSTS')) define('WP_ACCESSIBLE_HOSTS', '${WP_ACCESSIBLE_HOSTS}');
 
+        /* Performance & Memory */
+        if (!defined('WP_MEMORY_LIMIT')) define('WP_MEMORY_LIMIT', '${WP_MEMORY_LIMIT}');
+        if (!defined('WP_MAX_MEMORY_LIMIT')) define('WP_MAX_MEMORY_LIMIT', '${WP_MAX_MEMORY_LIMIT}');
+        if (!defined('WP_POST_REVISIONS')) define('WP_POST_REVISIONS', ${WP_POST_REVISIONS});
+        if (!defined('EMPTY_TRASH_DAYS')) define('EMPTY_TRASH_DAYS', ${EMPTY_TRASH_DAYS});
+
+        /* Security & Updates */
+        if (!defined('AUTOMATIC_UPDATER_DISABLED')) define('AUTOMATIC_UPDATER_DISABLED', ${AUTOMATIC_UPDATER_DISABLED});
+        if (!defined('WP_AUTO_UPDATE_CORE')) define('WP_AUTO_UPDATE_CORE', ${WP_AUTO_UPDATE_CORE});
+
         /* SQLite Object Cache MMAP - Performance */
         if (!defined('WP_SQLITE_OBJECT_CACHE_MMAP_SIZE')) define('WP_SQLITE_OBJECT_CACHE_MMAP_SIZE', ${WP_SQLITE_OBJECT_CACHE_MMAP_SIZE:-0});
         
