@@ -64,7 +64,7 @@ With deep integration, TurboStack delivers instant static caching, edge delivery
 ## 🌐 Access URLs
 
 **Local Development:**
-- WordPress: http://localhost (Nginx with FastCGI Cache)
+- WordPress: http://localhost
 - Adminer: http://localhost:8081
 - File Browser: http://localhost:8082 (check logs for password)
 
@@ -116,7 +116,7 @@ TZ=your-timezone
 
 ## 🧮 Resources adjustments
 
-This stack is pre-configured with optimized resource limits to enable deploying multiple WordPress sites on a single server. Adjust resource values in docker-compose.yml to match your host's capacity.
+This stack is pre-configured with optimized resource limits to enable deploying multiple WordPress sites on a single server. Adjust resource values .env and config files to match your host's capacity.
 
 ---
 
