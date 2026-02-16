@@ -90,10 +90,10 @@ services:
     depends_on:
       - wordpress
     volumes:
-      - wordpress-data:/var/www/html:ro
+      - wordpress-data:/var/www/html
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/rocket-nginx:/etc/nginx/rocket-nginx:ro
+      - ./nginx/rocket-nginx:/etc/nginx/rocket-nginx
     networks:
       - wp-network
     deploy:
