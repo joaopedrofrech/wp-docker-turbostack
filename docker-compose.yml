@@ -62,6 +62,7 @@ services:
         if (!defined('FS_METHOD')) define('FS_METHOD', '${FS_METHOD}');
         if (!defined('WP_HTTP_BLOCK_EXTERNAL')) define('WP_HTTP_BLOCK_EXTERNAL', ${WP_HTTP_BLOCK_EXTERNAL});
         if (!defined('WP_ACCESSIBLE_HOSTS')) define('WP_ACCESSIBLE_HOSTS', '${WP_ACCESSIBLE_HOSTS}');
+        if (!defined('FS_METHOD')) define('FS_METHOD', '${FS_METHOD}');
 
         /* Performance & Memory */
         if (!defined('WP_MEMORY_LIMIT')) define('WP_MEMORY_LIMIT', '${WP_MEMORY_LIMIT}');
