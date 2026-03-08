@@ -11,8 +11,6 @@
   "branding": {
     "name": "Files",
     "disableUsedPercentage": true,
-    "files": {
-      "theme": "dark"
-    }
+    "theme": "dark"
   }
 }
