@@ -166,6 +166,7 @@ services:
       - filebrowser-data:/database
     networks:
       - wp-network
+    command: ["sh", "-c", "filebrowser -d /database/filebrowser.db config set --umask 0022 && /init"]
     deploy:
       resources:
         limits:
