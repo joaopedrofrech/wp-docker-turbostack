@@ -133,6 +133,7 @@ services:
 # Adminer - Database Management
   adminer:
     image: dockette/adminer:full
+    user: "33:33"
     restart: unless-stopped
     depends_on:
       - mariadb
