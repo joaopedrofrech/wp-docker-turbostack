@@ -112,6 +112,8 @@ services:
   nginx:
     image: nginx:1.28-alpine
     user: "33:33"
+    sysctls:
+      - net.ipv4.ip_unprivileged_port_start=0
     restart: unless-stopped
     depends_on:
       - wordpress
