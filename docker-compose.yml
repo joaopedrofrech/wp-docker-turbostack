@@ -155,6 +155,7 @@ services:
   filebrowser:
     image: filebrowser/filebrowser:s6
     restart: unless-stopped
+    command: ["/bin/sh", "-c", "filebrowser config init --database /database/filebrowser.db && filebrowser config set --fileMode 420 --dirMode 493 --database /database/filebrowser.db && /init"]
     environment:
       - PUID=33
       - PGID=33
