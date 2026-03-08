@@ -111,6 +111,7 @@ services:
   # Nginx - Web Server
   nginx:
     image: nginx:1.28-alpine
+    user: "33:33"
     restart: unless-stopped
     depends_on:
       - wordpress
