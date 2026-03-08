@@ -158,6 +158,8 @@ services:
     environment:
       - PUID=33
       - PGID=33
+      - FB_UMASK=0022
+      - UMASK=0022
     volumes:
       - wordpress-data:/srv
       - ./filebrowser.json:/config/settings.json
