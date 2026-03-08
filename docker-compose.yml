@@ -41,6 +41,7 @@ services:
   # WordPress with PHP-FPM
   wordpress:
     image: wordpress:fpm
+    user: "33:33"
     restart: unless-stopped
     depends_on:
       - mariadb
