@@ -162,7 +162,7 @@ services:
       - UMASK=0022
     volumes:
       - wordpress-data:/srv
-      - ./filebrowser.json:/config/settings.json
+      - ./filebrowser.json:/config/filebrowser.json
       - filebrowser-data:/database
     networks:
       - wp-network
