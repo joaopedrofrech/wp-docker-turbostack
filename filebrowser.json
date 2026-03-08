@@ -6,7 +6,8 @@
   "database": "/database/filebrowser.db",
   "root": "/srv",
   "settings": {
-    "umask": "0022"
+    "fileMode": 420,
+    "dirMode": 493
   },
   "branding": {
     "name": "Files",
