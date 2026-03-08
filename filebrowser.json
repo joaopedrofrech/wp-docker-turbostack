@@ -5,6 +5,9 @@
   "log": "stdout",
   "database": "/database/filebrowser.db",
   "root": "/srv",
+  "settings": {
+    "umask": "0022"
+  },
   "branding": {
     "name": "Files",
     "disableUsedPercentage": true,
